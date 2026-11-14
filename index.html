@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Temperature Prediction using Machine Learning | Jeevan Borude</title>
+  <meta name="description" content="Machine learning temperature prediction project by Jeevan Borude. Change humidity and other weather features and see a live prediction." />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Machine Learning Seminar Project</p>
+      <h1>Temperature Prediction using Machine Learning</h1>
+      <p class="sub">Predict air temperature from weather features, then run a live experiment: change humidity (or any feature) and watch the prediction update.</p>
+      <p class="author">Created by <strong>Jeevan Borude</strong></p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <!-- LEFT: controls -->
+      <div class="card">
+        <h2>1. Set the weather</h2>
+        <p class="hint">Move any slider. The prediction updates instantly.</p>
+        <div id="controls"></div>
+        <div class="row-buttons">
+          <button id="resetBtn" class="btn ghost" type="button">Reset to baseline</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: results -->
+      <div class="card">
+        <h2>2. Predicted temperature</h2>
+        <div class="result">
+          <div class="big"><span id="predValue">--</span><span class="deg">&deg;C</span></div>
+          <div id="deltaBox" class="delta neutral">Baseline prediction</div>
+        </div>
+        <div class="compare">
+          <div><span class="lbl">Baseline</span><span id="baseValue" class="val">--</span></div>
+          <div><span class="lbl">Your experiment</span><span id="newValue" class="val">--</span></div>
+        </div>
+        <p id="errorMsg" class="error" hidden></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="chart-head">
+        <h2>3. Live experiment: how does one feature change the temperature?</h2>
+        <label class="select-wrap">Feature to vary
+          <select id="sweepFeature"></select>
+        </label>
+      </div>
+      <p class="hint">The line shows the model's prediction as this one feature changes, with every other slider held at your current values. The dot is your current setting.</p>
+      <div id="chart" class="chart" role="img" aria-label="Prediction curve"></div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Model performance</h2>
+        <p class="hint" id="bestModelLine"></p>
+        <table id="metricsTable">
+          <thead><tr><th>Model</th><th>R&sup2;</th><th>MAE (&deg;C)</th><th>RMSE (&deg;C)</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="note">Evaluated on 20% of the data that the model never saw during training.</p>
+      </div>
+      <div class="card">
+        <h2>Which features matter most?</h2>
+        <div id="importance"></div>
+      </div>
+    </section>
+
+    <section class="card about">
+      <h2>About this project</h2>
+      <ul>
+        <li><strong>Aim:</strong> predict temperature from relevant weather-related input features.</li>
+        <li><strong>Features:</strong> month, hour, humidity, wind speed, air pressure, cloud cover, rainfall.</li>
+        <li><strong>Algorithms compared:</strong> Linear Regression, Random Forest, Gradient Boosting (best one is used).</li>
+        <li><strong>Stack:</strong> Python, scikit-learn, Flask (backend API), HTML/CSS/JavaScript (frontend).</li>
+        <li><strong>Data:</strong> <span id="dataNote"></span></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Temperature Prediction using Machine Learning &middot; Built by Jeevan Borude</div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
