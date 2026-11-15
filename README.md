@@ -1,4 +1,4 @@
-🌐 **Live demo:** https://https-github-com-jeevanborude90-yo61.onrender.com
+🌐 **Live demo:** https://jeevan-borude-temperature-ml.onrender.com
 
 # Temperature Prediction using Machine Learning
 
