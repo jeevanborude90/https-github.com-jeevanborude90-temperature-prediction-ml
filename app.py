@@ -19,11 +19,24 @@ import pandas as pd
 from flask import Flask, jsonify, request, send_from_directory
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Works with BOTH layouts: files inside static/ and model/ folders, or all files
+# loose in one folder (what happens when uploading through GitHub's web page).
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+if not os.path.exists(os.path.join(STATIC_DIR, "index.html")):
+    STATIC_DIR = BASE_DIR
 MODEL_DIR = os.path.join(BASE_DIR, "model")
+if not os.path.exists(os.path.join(MODEL_DIR, "model.joblib")) and os.path.exists(
+    os.path.join(BASE_DIR, "model.joblib")
+):
+    MODEL_DIR = BASE_DIR
 MODEL_PATH = os.path.join(MODEL_DIR, "model.joblib")
 META_PATH = os.path.join(MODEL_DIR, "meta.json")
 
-app = Flask(__name__, static_folder="static", static_url_path="/static")
+# Only these files are ever served to the browser (never app.py or the model).
+PUBLIC_FILES = {"index.html", "style.css", "app.js"}
+
+app = Flask(__name__, static_folder=None)
 
 
 def load_artifacts():
@@ -39,8 +52,9 @@ def load_artifacts():
         import train_model
 
         train_model.main()
-        model = joblib.load(MODEL_PATH)
-        with open(META_PATH) as f:
+        new_dir = os.path.join(BASE_DIR, "model")
+        model = joblib.load(os.path.join(new_dir, "model.joblib"))
+        with open(os.path.join(new_dir, "meta.json")) as f:
             meta = json.load(f)
         return model, meta
 
@@ -76,7 +90,14 @@ def predict_rows(rows):
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    return send_from_directory(STATIC_DIR, "index.html")
+
+
+@app.route("/static/<path:filename>")
+def static_files(filename):
+    if filename not in PUBLIC_FILES:
+        return jsonify({"error": "Not found"}), 404
+    return send_from_directory(STATIC_DIR, filename)
 
 
 @app.route("/api/health")
